@@ -1,9 +1,28 @@
 import { Button, Flex, Image } from "@chakra-ui/react";
-import { FC } from "react";
+import { JsonRpcSigner } from "ethers";
+import { ethers } from "ethers";
+import { Dispatch, FC, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Header: FC = () => {
+interface HeaderProps {
+  signer: JsonRpcSigner | null;
+  setSigner: Dispatch<SetStateAction<JsonRpcSigner | null>>;
+}
+
+const Header: FC<HeaderProps> = ({ signer, setSigner }) => {
   const navigate = useNavigate();
+
+  const onClickMetamask = async () => {
+    try {
+      if (!window.ethereum) return;
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+
+      setSigner(await provider.getSigner());
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Flex bgColor="blue.100" h={24} justifyContent="space-between">
@@ -51,7 +70,11 @@ const Header: FC = () => {
         </Button>
       </Flex>
       <Flex bgColor="red.100" w={40} justifyContent="end" alignItems="center">
-        <Button>🦊 메마로그인</Button>
+        {signer ? (
+          <Button>{signer.address}</Button>
+        ) : (
+          <Button onClick={onClickMetamask}>🦊 메마로그인</Button>
+        )}
       </Flex>
     </Flex>
   );
