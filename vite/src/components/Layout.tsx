@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import { JsonRpcSigner } from "ethers";
