@@ -1,8 +1,9 @@
 import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { OutletContext } from "../components/Layout";
 import axios from "axios";
+
+import { OutletContext } from "../components/Layout";
 import MintModal from "../components/MintModal";
 
 const MintNft: FC = () => {
