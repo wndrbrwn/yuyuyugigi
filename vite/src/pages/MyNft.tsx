@@ -28,6 +28,7 @@ const MyNft: FC = () => {
   const [isEnd, setIsEnd] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isApprovedForAll, setIsApprovedForAll] = useState<boolean>(false);
+  const [isApproveLoading, setIsApproveLoading] = useState<boolean>(false);
 
   const { mintContract, signer } = useOutletContext<OutletContext>();
 
@@ -90,14 +91,21 @@ const MyNft: FC = () => {
 
   const onClickSetApprovalForAll = async () => {
     try {
+      setIsApproveLoading(true);
+
       const response = await mintContract?.setApprovalForAll(
         saleContractAddress,
         !isApprovedForAll
       );
 
       await response.wait();
+
+      setIsApprovedForAll(!isApprovedForAll);
+      setIsApproveLoading(false);
     } catch (error) {
       console.error(error);
+
+      setIsApproveLoading(false);
     }
   };
 
@@ -120,8 +128,6 @@ const MyNft: FC = () => {
     getNftMetadata();
   }, [balanceOf]);
 
-  useEffect(() => console.log(nftMetadataArray), [nftMetadataArray]);
-
   return (
     <Flex w="100%" alignItems="center" flexDir="column" gap={2} mt={8} mb={20}>
       {signer ? (
@@ -131,6 +137,9 @@ const MyNft: FC = () => {
             <Button
               colorScheme={isApprovedForAll ? "red" : "green"}
               onClick={onClickSetApprovalForAll}
+              isDisabled={isApproveLoading}
+              isLoading={isApproveLoading}
+              loadingText="로딩중"
             >
               {isApprovedForAll ? "취소" : "승인"}
             </Button>
