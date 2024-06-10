@@ -17,6 +17,7 @@ import { FC, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { OutletContext } from "../components/Layout";
 import axios from "axios";
+import { saleContractAddress } from "../abis/contractAddress";
 
 const PAGE = 3;
 
@@ -26,6 +27,7 @@ const MyNft: FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isEnd, setIsEnd] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isApprovedForAll, setIsApprovedForAll] = useState<boolean>(false);
 
   const { mintContract, signer } = useOutletContext<OutletContext>();
 
@@ -73,10 +75,37 @@ const MyNft: FC = () => {
     }
   };
 
+  const getIsApprovedForAll = async () => {
+    try {
+      const response = await mintContract?.isApprovedForAll(
+        signer?.address,
+        saleContractAddress
+      );
+
+      setIsApprovedForAll(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onClickSetApprovalForAll = async () => {
+    try {
+      const response = await mintContract?.setApprovalForAll(
+        saleContractAddress,
+        !isApprovedForAll
+      );
+
+      await response.wait();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (!mintContract || !signer) return;
 
     getBalanceOf();
+    getIsApprovedForAll();
   }, [mintContract, signer]);
 
   useEffect(() => {
@@ -97,6 +126,15 @@ const MyNft: FC = () => {
     <Flex w="100%" alignItems="center" flexDir="column" gap={2} mt={8} mb={20}>
       {signer ? (
         <>
+          <Flex alignItems="center" gap={2}>
+            <Text>판매 권한 : {isApprovedForAll ? "승인" : "거부"}</Text>
+            <Button
+              colorScheme={isApprovedForAll ? "red" : "green"}
+              onClick={onClickSetApprovalForAll}
+            >
+              {isApprovedForAll ? "취소" : "승인"}
+            </Button>
+          </Flex>
           {balanceOf !== 0 && <Text>내 보유 NFT 갯수 : {balanceOf}</Text>}
           <Grid
             templateColumns={[
