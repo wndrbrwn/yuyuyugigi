@@ -6,22 +6,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract MintNft is ERC721Enumerable, Ownable {
+    string public name;
+    string public symbol;
+    
     string metadataUri;
     string unrevealedUri;
 
     bool isRevealed;
 
     constructor(string memory _name, string memory _symbol, string memory _metadataUri, string memory _unrevealedUri) ERC721(_name, _symbol) Ownable(msg.sender) {
+        name = _name;
+        symbol = _symbol;
         metadataUri = _metadataUri;
         unrevealedUri = _unrevealedUri;
     }
 
-    function mintNft() public onlyOwner {
-        require(totalSupply() < 9, "No more mint.");
+    function mintNft(uint _tokenId, uint _amount) public onlyOwner {
+     require(_tokenId < 17, "Not exist token.");
 
-        uint tokenId = totalSupply() + 1;
+        _mint(msg.sender, _tokenId, _amount, "");
 
-        _mint(msg.sender, tokenId);
     }
 
     function tokenURI(uint _tokenId) public view override returns (string memory) {

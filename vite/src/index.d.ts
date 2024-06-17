@@ -15,4 +15,8 @@ interface NftMetadata {
 interface SaleNftMetadata extends NftMetadata {
   price: bigint;
   tokenOwner: string;
+  tokenId: number;
+  amount: number;
 }
+
+

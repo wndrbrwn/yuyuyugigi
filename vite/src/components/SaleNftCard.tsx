@@ -34,7 +34,7 @@ const SaleNftCard: FC<SaleNftCardProps> = ({
   setTokenIds,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [nftMetadata, setNftMetadata] = useState<SaleNftMetadata>();
+  const [nftMetadata, setNftMetadata] = useState<StsNftMetadata>();
 
   const getNftMetadata = async () => {
     try {
